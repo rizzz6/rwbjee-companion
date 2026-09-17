@@ -283,7 +283,7 @@ test('Data: Jadavpur has CSE program', () => {
     const slice = JSON.parse(fs.readFileSync(jadavpurPath, 'utf-8'));
     const decoded = decodeColumnarData(slice);
 
-    const hasCSE = decoded.some(c => c.program.includes('COMPUTER SCIENCE'));
+    const hasCSE = decoded.some(c => c.program.toUpperCase().includes('COMPUTER SCIENCE'));
     if (!hasCSE) throw new Error('Jadavpur should have Computer Science program');
 });
 

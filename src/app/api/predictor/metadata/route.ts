@@ -2,8 +2,32 @@ import { NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
 import zlib from 'zlib';
 import { promisify } from 'util';
+import fs from 'fs';
+import path from 'path';
 
 const gunzip = promisify(zlib.gunzip);
+
+function loadFallbackMetadata() {
+    try {
+        const filePath = path.join(process.cwd(), 'public', 'cutoffs-data.json');
+        if (fs.existsSync(filePath)) {
+            const raw = fs.readFileSync(filePath, 'utf-8');
+            const { lookup } = JSON.parse(raw);
+            return {
+                institutes: lookup.C || [],
+                branches: lookup.P || [],
+                categories: lookup.T || [],
+                quotas: ['Home State', 'All India'],
+                seat_types: lookup.S || [],
+                years: [...(lookup.Y || [])].sort((a: number, b: number) => b - a),
+                rounds: lookup.R || [],
+            };
+        }
+    } catch (err) {
+        console.error('Failed to load fallback metadata from cutoffs-data.json:', err);
+    }
+    return null;
+}
 
 // Initialize Redis client with environment validation
 const getRedisClient = () => {
@@ -29,8 +53,16 @@ const redis = getRedisClient();
  */
 export async function GET() {
     try {
-        // If Redis is not available, return error response
+        // If Redis is not available, try local fallback
         if (!redis) {
+            const fallback = loadFallbackMetadata();
+            if (fallback) {
+                return NextResponse.json(fallback, {
+                    headers: {
+                        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=3600',
+                    }
+                });
+            }
             console.error('[Metadata API] Redis not available - check environment variables');
             return NextResponse.json(
                 { error: 'Database connection not configured' },
@@ -55,6 +87,14 @@ export async function GET() {
         const masterDataRaw = await redis.get('wbjee:master_data');
 
         if (!masterDataRaw) {
+            const fallback = loadFallbackMetadata();
+            if (fallback) {
+                return NextResponse.json(fallback, {
+                    headers: {
+                        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=3600',
+                    }
+                });
+            }
             return NextResponse.json(
                 { error: 'Master data not available' },
                 { status: 500 }

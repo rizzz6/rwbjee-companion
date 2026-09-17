@@ -29,7 +29,7 @@ function buildDeviceResponse(request: NextRequest, deviceType: 'desktop' | 'mobi
     return response;
 }
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
     const userAgent = request.headers.get('user-agent') || '';
 
     // 1. Bot Detection (Critical for SEO)

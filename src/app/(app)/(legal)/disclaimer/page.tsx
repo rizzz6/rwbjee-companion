@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     url: "https://www.rwbjee.com/disclaimer",
     images: [
       {
-        url: "/og-image.svg",
+        url: "/assets/images/og-image.svg",
         width: 1200,
         height: 630,
         alt: "Disclaimer - WBJEE College Predictor",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Disclaimer | WBJEE College Predictor",
     description: "Read our disclaimer and terms of use for the WBJEE College Predictor tool.",
-    images: ["/og-image.svg"],
+    images: ["/assets/images/og-image.svg"],
   },
 };
 

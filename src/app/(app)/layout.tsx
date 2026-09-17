@@ -124,11 +124,11 @@ export default async function RootLayout({
         <Providers>
           <PreviewBanner />
           {/* Announcement Banner */}
-          {announcement?.enabled && (
+          {announcement?.enabled && announcement.message && (
             <AnnouncementBanner
               message={announcement.message}
-              linkUrl={announcement.linkUrl}
-              linkText={announcement.linkText}
+              linkUrl={announcement.linkUrl || undefined}
+              linkText={announcement.linkText || undefined}
               variant={announcement.variant || 'info'}
             />
           )}

@@ -109,7 +109,16 @@ export default async function CollegeProfile({ params }: { params: Promise<{ slu
     draft: isDraftMode,
   });
   const cutoffDoc = cutoffRes.docs[0];
-  const cutoffs = cutoffDoc?.cutoffs || [];
+  const cutoffs = (cutoffDoc?.cutoffs || []).map(c => ({
+    year: c.year,
+    round: c.round || 'Round 1',
+    program: c.program,
+    quota: c.quota || '',
+    category: c.category || 'General',
+    seatType: c.seatType || undefined,
+    openingRank: c.openingRank ?? 0,
+    closingRank: c.closingRank ?? 0,
+  }));
 
   const logo = college.logo as PayloadMedia | null;
   const cover = college.coverImage as PayloadMedia | null;
@@ -199,7 +208,7 @@ export default async function CollegeProfile({ params }: { params: Promise<{ slu
                     {college.shortName}
                   </span>
                 )}
-                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-white ${college.type === 'Government' ? 'bg-green-700' : 'bg-gray-600'}`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-white ${college.type && college.type.includes('Govt') ? 'bg-green-700' : 'bg-gray-600'}`}>
                   {college.type}
                 </span>
               </div>

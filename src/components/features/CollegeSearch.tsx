@@ -28,8 +28,19 @@ export default function CollegeSearch({ colleges }: CollegeSearchProps) {
     const trimmedSearch = searchTerm.trim().toLowerCase();
     
     return colleges.filter((college) => {
-      // 1. Type filter first (fastest)
-      if (filterType !== 'All' && college.type !== filterType) return false;
+      // 1. Type filter first (flexible matching for Government/Private variations)
+      if (filterType !== 'All') {
+        const cType = (college.type || '').toLowerCase();
+        if (filterType === 'Government') {
+          const isGovt = cType.includes('govt') || cType === 'government' || cType === 'university';
+          if (!isGovt) return false;
+        } else if (filterType === 'Private') {
+          const isPrivate = cType.includes('private');
+          if (!isPrivate) return false;
+        } else if (college.type !== filterType) {
+          return false;
+        }
+      }
       
       // 2. Search filter (if exists)
       if (trimmedSearch) {

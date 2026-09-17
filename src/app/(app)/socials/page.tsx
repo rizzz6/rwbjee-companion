@@ -16,7 +16,7 @@ export const metadata: Metadata = {
         type: "website",
         images: [
             {
-                url: "/og-image.svg",
+                url: "/assets/images/og-image.svg",
                 width: 1200,
                 height: 630,
                 alt: "r/wbjee Community",

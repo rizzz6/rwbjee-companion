@@ -51,6 +51,7 @@ import { Users } from './src/collections/Users'
 import { Tags } from './src/collections/Tags'
 import { Authors } from './src/collections/Authors'
 import { CollegePlacementReports } from './src/collections/CollegePlacementReports'
+import { AnswerKeys } from './src/collections/AnswerKeys'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -113,7 +114,7 @@ export default buildConfig({
     },
   },
   editor: lexicalEditor({}),
-  collections: [Colleges, CollegeCutoffs, Media, Posts, Timeline, Users, Tags, Authors, CollegePlacementReports],
+  collections: [Colleges, CollegeCutoffs, Media, Posts, Timeline, Users, Tags, Authors, CollegePlacementReports, AnswerKeys],
   globals: [SiteSettings],
   secret: requireEnv('PAYLOAD_SECRET'),
   db: postgresAdapter({

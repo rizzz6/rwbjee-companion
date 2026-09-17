@@ -58,6 +58,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/marks-calculator`,
+      lastModified: defaultLastMod,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/colleges`,
       lastModified: defaultLastMod,
       changeFrequency: 'weekly',

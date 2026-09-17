@@ -90,13 +90,14 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
     if (name) authorNames.push(name);
   }
   
+  const extendedPost = post as typeof post & { authorName?: string | null; bodyHtml?: string | null };
   const displayAuthor = authorNames.length > 0 
     ? authorNames.join(', ') 
-    : (post.authorName as string | undefined) || 'rwbjee Team';
+    : (extendedPost.authorName as string | undefined) || 'rwbjee Team';
 
   const bodyHtml = renderRichTextToHtml({
     content: post.body,
-    fallbackHtml: typeof post.bodyHtml === 'string' ? post.bodyHtml : null,
+    fallbackHtml: typeof extendedPost.bodyHtml === 'string' ? extendedPost.bodyHtml : null,
   });
 
   return (

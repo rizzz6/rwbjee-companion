@@ -11,6 +11,7 @@ import {
   TrendingUp,
   BarChart3,
   BookOpen,
+  Calculator,
   LucideIcon
 } from 'lucide-react'
 import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
@@ -22,6 +23,7 @@ const NAV_LINKS: { href: string; icon: LucideIcon; label: string }[] = [
   { href: '/#home', icon: Home, label: 'Home' },
   { href: '/colleges', icon: GraduationCap, label: 'Colleges' },
   { href: '/predictor', icon: TrendingUp, label: 'Predictor' },
+  { href: '/marks-calculator', icon: Calculator, label: 'Marks Calc' },
   { href: '/cutoffs', icon: BarChart3, label: 'Cutoffs' },
   { href: '/blog', icon: BookOpen, label: 'Blog' },
 ];

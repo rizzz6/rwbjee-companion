@@ -37,9 +37,8 @@ export async function POST(req: NextRequest) {
   logger.info(`[Build] Running script: ${command}`)
 
   try {
-    // Note: This execution is synchronous relative to the response.
-    // In a production environment with long-running tasks, this should be moved to a background job.
-    const { stdout, stderr } = await execPromise(command)
+    // Execution timeout capped at 60s to prevent hung processes
+    const { stdout, stderr } = await execPromise(command, { timeout: 60000, maxBuffer: 10 * 1024 * 1024 })
     
     return NextResponse.json({ 
       success: true, 

@@ -21,8 +21,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'hookUrl is required' }, { status: 400 })
     }
 
+    let parsedUrl: URL
+    try {
+      parsedUrl = new URL(hookUrl)
+    } catch {
+      return NextResponse.json({ error: 'Invalid hookUrl format' }, { status: 400 })
+    }
+
+    if (parsedUrl.protocol !== 'https:') {
+      return NextResponse.json({ error: 'Only HTTPS hook URLs are permitted' }, { status: 400 })
+    }
+
+    const allowedHosts = ['api.vercel.com', 'vercel.com']
+    if (!allowedHosts.some(host => parsedUrl.hostname === host || parsedUrl.hostname.endsWith(`.${host}`))) {
+      return NextResponse.json({ error: 'Disallowed hookUrl host' }, { status: 400 })
+    }
+
     // Trigger the Vercel Deploy Hook
-    const resp = await fetch(hookUrl, { method: 'POST' })
+    const resp = await fetch(parsedUrl.toString(), { method: 'POST' })
     
     if (!resp.ok) {
       const errorText = await resp.text()

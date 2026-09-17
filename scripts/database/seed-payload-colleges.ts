@@ -135,13 +135,13 @@ async function seedColleges() {
         await payload.update({
           collection: 'colleges',
           id: existingId,
-          data,
+          data: data as never,
         })
         console.log(`Updated: ${jsonName}`)
       } else {
         await payload.create({
           collection: 'colleges',
-          data,
+          data: data as never,
         })
         created++
         console.log(`Created: ${jsonName}`)

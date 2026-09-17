@@ -51,16 +51,16 @@ export async function POST() {
               collection: 'tags',
               data: { name: legacyTag.label, slug },
             })
-            tagIds.push(newTag.id as string)
+            tagIds.push(newTag.id as never)
           } else {
-            tagIds.push(tagDoc.docs[0].id as string)
+            tagIds.push(tagDoc.docs[0].id as never)
           }
         }
         
         await payload.update({
           collection: 'posts',
           id: post.id,
-          data: { tags_rel: tagIds },
+          data: { tags: tagIds } as never,
           overrideAccess: true,
         })
       }
@@ -80,23 +80,25 @@ export async function POST() {
           where: { slug: { equals: slug } },
         })
 
-        let authorId: string
+        let authorId: number | string | undefined
         if (authorDoc.docs.length === 0) {
           const newAuthor = await payload.create({
             collection: 'authors',
             data: { name: authorName, slug },
           })
-          authorId = newAuthor.id as string
+          authorId = newAuthor.id
         } else {
-          authorId = authorDoc.docs[0].id as string
+          authorId = authorDoc.docs[0].id
         }
 
-        await payload.update({
-          collection: 'posts',
-          id: post.id,
-          data: { author_rel: authorId },
-          overrideAccess: true,
-        })
+        if (authorId) {
+          await payload.update({
+            collection: 'posts',
+            id: post.id,
+            data: { author: [authorId] } as never,
+            overrideAccess: true,
+          })
+        }
       }
     }
 
@@ -129,7 +131,7 @@ export async function POST() {
             highestPackageLpa: parsePackage(legacyPlacement.highestPackage),
             averagePackageLpa: parsePackage(legacyPlacement.averagePackage),
             medianPackageLpa: parsePackage(legacyPlacement.nirfMedianSalary),
-            topRecruiters: legacyPlacement.topRecruiters,
+            topRecruiters: legacyPlacement.topRecruiters as never,
             sourceType: 'estimated',
             sourceName: legacyPlacement.dataSource || 'Imported from Legacy System',
             sourceReliability: legacyPlacement.sourceReliability?.toLowerCase() === 'high' ? 'high' : 'medium',

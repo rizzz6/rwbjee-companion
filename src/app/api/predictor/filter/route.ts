@@ -3,6 +3,8 @@ import { logger } from '@/utils/logger';
 import { Redis } from '@upstash/redis';
 import zlib from 'zlib';
 import { promisify } from 'util';
+import fs from 'fs';
+import path from 'path';
 
 // Switch to Node.js runtime to support zlib and persistent caching
 export const runtime = 'nodejs';
@@ -76,6 +78,37 @@ function getAdaptiveMultipliers(rank: number): { min: number; max: number } {
 }
 
 
+function loadFallbackData(): CollegeData[] {
+    try {
+        const filePath = path.join(process.cwd(), 'public', 'cutoffs-data.json');
+        if (fs.existsSync(filePath)) {
+            const raw = fs.readFileSync(filePath, 'utf-8');
+            const parsed = JSON.parse(raw);
+            const { lookup, data } = parsed;
+            const records: CollegeData[] = [];
+            for (let i = 0; i < data.c.length; i++) {
+                records.push({
+                    id: `local-${i}`,
+                    institute: lookup.C[data.c[i]],
+                    branch: lookup.P[data.p[i]],
+                    year: lookup.Y[data.y[i]],
+                    category: lookup.T[data.t[i]],
+                    round: lookup.R[data.r[i]],
+                    seat_type: lookup.S[data.s[i]],
+                    quota: 'Home State',
+                    opening_rank: data.o[i],
+                    closing_rank: data.k[i],
+                });
+            }
+            logger.info(`✅ Loaded ${records.length} fallback records from cutoffs-data.json`);
+            return records;
+        }
+    } catch (err) {
+        logger.error('❌ Failed to load fallback cutoffs-data.json:', err);
+    }
+    return [];
+}
+
 async function getMasterData(): Promise<CollegeData[]> {
     const now = Date.now();
 
@@ -84,41 +117,42 @@ async function getMasterData(): Promise<CollegeData[]> {
         return memoryCache.data;
     }
 
-    // 2. Ensure Redis is available
-    if (!redis) {
-        logger.error('❌ Redis client not initialized');
-        throw new Error('Database unavailable - Redis credentials missing');
-    }
+    // 2. Try Redis if available
+    if (redis) {
+        try {
+            logger.debug('🔄 Cache stale or empty. Fetching from Upstash...');
+            const base64Data = await redis.get<string>('wbjee:master_data');
 
-    logger.debug('🔄 Cache stale or empty. Fetching from Upstash...');
+            if (base64Data) {
+                const buffer = Buffer.from(base64Data, 'base64');
+                const decompressed = await gunzip(buffer);
+                const data = JSON.parse(decompressed.toString()) as CollegeData[];
 
-    try {
-        // 3. Fetch Compressed Blob from Redis
-        const base64Data = await redis.get<string>('wbjee:master_data');
+                memoryCache = {
+                    data: data,
+                    timestamp: now
+                };
 
-        if (!base64Data) {
-            logger.error('❌ No data found in Redis key: wbjee:master_data');
-            throw new Error('Database not seeded - run seed-upstash script');
+                logger.debug(`✅ Data loaded from Redis. Records: ${data.length}`);
+                return data;
+            }
+            logger.warn('⚠️ No data found in Redis key: wbjee:master_data. Falling back to local data.');
+        } catch (error) {
+            logger.warn('⚠️ Redis fetch failed. Falling back to local data:', error);
         }
-
-        // 4. Decompress
-        const buffer = Buffer.from(base64Data, 'base64');
-        const decompressed = await gunzip(buffer);
-        const data = JSON.parse(decompressed.toString()) as CollegeData[];
-
-        // 5. Update Cache
-        memoryCache = {
-            data: data,
-            timestamp: now
-        };
-
-        logger.debug(`✅ Data loaded from Redis. Records: ${data.length}`);
-        return data;
-
-    } catch (error) {
-        logger.error('❌ Redis fetch failed:', error);
-        throw new Error('Service temporarily unavailable');
     }
+
+    // 3. Fallback to local cutoffs-data.json
+    const fallback = loadFallbackData();
+    if (fallback.length > 0) {
+        memoryCache = {
+            data: fallback,
+            timestamp: now,
+        };
+        return fallback;
+    }
+
+    throw new Error('College predictor data temporarily unavailable');
 }
 
 

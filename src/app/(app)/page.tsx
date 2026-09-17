@@ -228,7 +228,7 @@ export default function Page() {
             "name": "rwbjee",
             "alternateName": "r/wbjee Companion",
             "url": "https://www.rwbjee.com",
-            "logo": "https://www.rwbjee.com/og-image.svg",
+            "logo": "https://www.rwbjee.com/assets/images/og-image.svg",
             "description": "Your guide for WBJEE 2026. Free college Predictor, dates, cutoffs, rank analysis & exam resources to simplify your journey from prep to admission.",
             "founder": {
               "@type": "Person",

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     url: "https://www.rwbjee.com/faq",
     images: [
       {
-        url: "/og-image.svg",
+        url: "/assets/images/og-image.svg",
         width: 1200,
         height: 630,
         alt: "FAQ - WBJEE College Predictor",

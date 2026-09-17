@@ -12,6 +12,11 @@ export const GET = async (req: Request) => {
     return new Response('Missing URL or Token', { status: 400 })
   }
 
+  // Prevent open redirect: URL must be a relative internal path
+  if (!url.startsWith('/') || url.startsWith('//')) {
+    return new Response('Invalid preview URL: must be relative path', { status: 400 })
+  }
+
   const payload = await getPayload({ config })
 
   // Verify the token with Payload

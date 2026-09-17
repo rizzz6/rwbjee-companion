@@ -8,6 +8,7 @@ import {
   Calendar,
   TrendingUp,
   BarChart3,
+  Calculator,
   Share2,
   HelpCircle,
   Shield,
@@ -72,6 +73,10 @@ export default function Footer() {
                 <Link href="/predictor" className="flex items-center gap-1.5 hover:text-red-600 dark:hover:text-red-400 transition-colors">
                   <TrendingUp className="w-4 h-4" />
                   <span>Rank Predictor</span>
+                </Link>
+                <Link href="/marks-calculator" className="flex items-center gap-1.5 hover:text-red-600 dark:hover:text-red-400 transition-colors">
+                  <Calculator className="w-4 h-4" />
+                  <span>Marks Calculator</span>
                 </Link>
                 <Link href="/cutoffs" className="flex items-center gap-1.5 hover:text-red-600 dark:hover:text-red-400 transition-colors">
                   <BarChart3 className="w-4 h-4" />

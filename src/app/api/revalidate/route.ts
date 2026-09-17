@@ -65,7 +65,10 @@ export async function POST(request: NextRequest) {
                 await safeRevalidate('/api/v1/cutoffs/search')
                 if (slug) await safeRevalidate(`/colleges/${slug}`)
                 break
+            case 'college_cutoffs':
             case 'college-cutoffs':
+                await safeRevalidate('/cutoffs')
+                await safeRevalidate('/')
                 await safeRevalidate('/api/predictor/filter')
                 await safeRevalidate('/api/predictor/metadata')
                 await safeRevalidate('/api/v1/cutoffs/search')

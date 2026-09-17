@@ -81,6 +81,8 @@ export const Colleges: CollectionConfig = {
               type: 'select',
               options: [
                 { label: 'University', value: 'University' },
+                { label: 'Government', value: 'Government' },
+                { label: 'Private', value: 'Private' },
                 { label: 'State Govt Engineering College', value: 'State Govt Engineering' },
                 { label: 'State Govt Pharmacy College', value: 'State Govt Pharmacy' },
                 { label: 'Central Govt Engineering College', value: 'Central Govt Engineering' },

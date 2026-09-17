@@ -46,7 +46,7 @@ export async function POST(_req: NextRequest) {
           collection: 'colleges',
           id: college.id,
           data: {
-            logo: match.id as string
+            logo: match.id as number
           }
         })
         count++

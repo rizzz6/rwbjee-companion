@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-image.svg",
+        url: "/assets/images/og-image.svg",
         width: 1200,
         height: 630,
         alt: "WBJEE Prep Blog - Expert Guides and Updates",
@@ -93,7 +93,7 @@ export default async function BlogPage() {
                         const authorNames = authors
                           .map((a) => (typeof a === 'object' && a !== null ? (a as AuthorDoc).name : null))
                           .filter((name): name is string => typeof name === 'string');
-                        const displayAuthor = authorNames.length > 0 ? authorNames.join(', ') : (post.authorName as string | undefined);
+                        const displayAuthor = authorNames.length > 0 ? authorNames.join(', ') : ((post as { authorName?: string }).authorName);
                         
                         return displayAuthor ? (
                           <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">

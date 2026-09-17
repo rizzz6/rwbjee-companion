@@ -31,12 +31,12 @@ export default function FeaturedColleges({ colleges }: { colleges: College[] }) 
         </div>
 
         {/* CARDS GRID */}
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {colleges.map((col) => (
             <Link
               key={col._id}
               href={`/colleges/${col.slug.current}`}
-              className="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:border-red-100 dark:hover:border-red-900/30 transition-all duration-300 w-full sm:w-[calc(50%-8px)] md:w-[calc(25%-12px)]"
+              className="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:border-red-100 dark:hover:border-red-900/30 transition-all duration-300 w-full"
             >
               {/* LOGO CONTAINER */}
               <div className="w-20 h-20 mb-4 relative flex items-center justify-center bg-white rounded-2xl p-2 shadow-sm border border-gray-100 dark:border-gray-700 group-hover:scale-110 transition-transform duration-300 overflow-hidden">
