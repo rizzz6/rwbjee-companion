@@ -22,6 +22,17 @@ interface PayloadMedia {
   height?: number;
 }
 
+interface CutoffRow {
+  year: number;
+  program: string;
+  round?: string;
+  quota?: string;
+  category?: string;
+  seatType?: string;
+  openingRank?: number;
+  closingRank?: number;
+}
+
 export async function generateStaticParams() {
   const payload = await getPayloadClient();
   const res = await payload.find({
@@ -109,7 +120,7 @@ export default async function CollegeProfile({ params }: { params: Promise<{ slu
     draft: isDraftMode,
   });
   const cutoffDoc = cutoffRes.docs[0];
-  const cutoffs = (cutoffDoc?.cutoffs || []).map(c => ({
+  const cutoffs = ((cutoffDoc?.cutoffs as CutoffRow[] | undefined) || []).map(c => ({
     year: c.year,
     round: c.round || 'Round 1',
     program: c.program,
