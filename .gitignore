@@ -112,3 +112,5 @@ src/app/(payload)/admin/importMap.js
 # Agent Skills
 .agents/
 
+.opencode/
+.cline/skills/
